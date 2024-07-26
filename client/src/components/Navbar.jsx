@@ -5,8 +5,6 @@ export default function Navbar() {
         <div>
             <nav>
                 <NavLink to="/">Home</NavLink>
-                <NavLink to="/upload">Upload</NavLink>
-                <NavLink to="/youtube-upload">Youtube Upload</NavLink>
 
                 <NavLink to="/about">About</NavLink>
             </nav>

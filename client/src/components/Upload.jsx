@@ -5,8 +5,8 @@ export default function Upload() {
     // const [form, setForm] = useState();
     const inputRef = React.useRef();
 
-    const [source, setSource] = React.useState();
-    const [file, setFile] = React.useState();
+    const [source, setSource] = useState();
+    const [file, setFile] = useState();
     const [status, setStatus] = useState();
     const [regions, setRegions] = useState([]);
 
@@ -45,7 +45,7 @@ export default function Upload() {
                 onChange={handleFileChange}
                 accept=".mov,.mp4"
             />
-            {!source && <button onClick={handleChoose}>Choose</button>}
+            {!source && <button onClick={handleChoose}>Choose </button>}
             {source && (
                 <RegionSelect
                     regions={regions}

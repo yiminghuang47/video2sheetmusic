@@ -11,6 +11,7 @@ import About from "./components/About";
 import Navbar from "./components/Navbar";
 import App from "./App";
 import YoutubeUpload from "./components/YoutubeUpload";
+import Home from "./components/Home";
 
 
 
@@ -21,17 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Upload />,
-      },
-    ],
-  },
-  {
-    path: "/youtube-upload",
-    element: <App />,
-    children: [
-      {
-        path: "/youtube-upload",
-        element: <YoutubeUpload />,
+        element: <Home />,
       },
     ],
   },
@@ -46,6 +37,7 @@ const router = createBrowserRouter([
     ],
   }
 ]);
+
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
