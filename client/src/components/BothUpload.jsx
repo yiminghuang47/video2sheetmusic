@@ -2,14 +2,15 @@ import React, { useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import RegionSelect from "react-region-select";
 import YouTube from "react-youtube";
-
 import getYouTubeID from "get-youtube-id";
+import './BothUpload.css';
+
 export default function BothUpload() {
     const inputRef = useRef();
-    const [urlInput, setUrlInput] = useState(null);
-    const [url, setUrl] = useState(null);
-    const [videoId, setVideoId] = useState(null);
-    const [status, setStatus] = useState(null);
+    const [urlInput, setUrlInput] = useState("");
+    const [url, setUrl] = useState("");
+    const [videoId, setVideoId] = useState("");
+    const [status, setStatus] = useState("");
     const [regions, setRegions] = useState([]);
 
     const [uploadSource, setUploadSource] = useState();
@@ -21,9 +22,9 @@ export default function BothUpload() {
         setUploadSource(url);
         setFile(file);
         setRegions([{ x: 0, y: 0, width: 50, height: 50, data: { index: 0 } }]);
-        setUrl(null);
-        setUrlInput(null);
-        setVideoId(null);
+        setUrl("");
+        setUrlInput("");
+        setVideoId("");
         event.target.value = null;
     };
 
@@ -47,10 +48,9 @@ export default function BothUpload() {
         event.preventDefault();
         setUrl(urlInput);
 
-        setUploadSource(null);
+        setUploadSource("");
         setRegions(null);
         setFile(null);
-        setRegions(null);
         const id = getYouTubeID(urlInput);
         setVideoId(id);
 
@@ -86,70 +86,76 @@ export default function BothUpload() {
     };
 
     return (
-        <div className="VideoInput">
-            <div>Sheet Music Tool</div>
-            <form onSubmit={handleUrlChange}>
-                <input
-                    type="text"
-                    name="url"
-                    value={urlInput}
-                    onChange={handleUrlInputChange}
-                />
-                <button type="submit">Search</button>
+        <div className="container">
+            <div className="title">Sheet Music Tool</div>
+            <form className="form" onSubmit={handleUrlChange}>
+                <label>Enter YouTube link: </label>
+                <div className="input-container">
+                    <input
+                        className="input-text"
+                        type="text"
+                        name="url"
+                        value={urlInput}
+                        onChange={handleUrlInputChange}
+                    />
+                    <button className="button button-enter" type="submit">Enter</button>
+                </div>
             </form>
 
+            <label>or</label>
             <input
                 ref={inputRef}
-                className="VideoInput_input"
                 type="file"
                 onChange={handleUploadFileChange}
                 accept=".mov,.mp4"
                 hidden
             />
 
-            {<button onClick={handleChoose}>Upload Video </button>}
+            <button className="button" onClick={handleChoose}>Upload Video</button>
+
             {videoId && (
-                <RegionSelect
-                    regions={regions}
-                    onChange={regionsOnChange}
-                    maxRegions={1}
-                    regionStyle={{
-                        background: "rgba(0, 255, 0, 0.5)",
-                        zIndex: 2,
-                    }}
-                    constraint
-                >
-                    <div style={{ zIndex: 1 }}>
-                        <YouTube videoId={videoId} id="video" />
-                    </div>
-                </RegionSelect>
+                <div className="video-container">
+                    <RegionSelect
+                        regions={regions}
+                        onChange={regionsOnChange}
+                        maxRegions={1}
+                        regionStyle={{
+                            background: "rgba(0, 255, 0, 0.5)",
+                            zIndex: 2,
+                        }}
+                        constraint
+                    >
+                        <div style={{ zIndex: 1 }}>
+                            <YouTube videoId={videoId} id="video" />
+                        </div>
+                    </RegionSelect>
+                </div>
             )}
 
-            {videoId && <button onClick={handleUploadUrl}>Upload Url</button>}
+            {videoId && <button className="button" onClick={handleUploadUrl}>Convert to Sheet Music</button>}
 
             {file && (
-                <RegionSelect
-                    regions={regions}
-                    onChange={regionsOnChange}
-                    maxRegions={1}
-                    regionStyle={{
-                        background: "rgba(0, 255, 0, 0.5)",
-                        zIndex: 2,
-                    }}
-                    constraint
-                >
-                    <video
-                        className="VideoInput_video"
-                        style={{ zIndex: 1 }}
-                        width="100%"
-                        height={400}
-                        controls
-                        src={uploadSource}
-                    />
-                </RegionSelect>
+                <div className="video-container">
+                    <RegionSelect
+                        regions={regions}
+                        onChange={regionsOnChange}
+                        maxRegions={1}
+                        regionStyle={{
+                            background: "rgba(0, 255, 0, 0.5)",
+                            zIndex: 2,
+                        }}
+                        constraint
+                    >
+                        <video
+                            className="video"
+                            controls
+                            src={uploadSource}
+                        />
+                    </RegionSelect>
+                </div>
             )}
-            {file && <button onClick={handleUploadFile}>Upload File</button>}
-            {status && <h4>{status}</h4>}
+            {file && <button className="button" onClick={handleUploadFile}>Convert to Sheet Music</button>}
+            {/*status && <h4 className="status">{status}</h4>*/}
         </div>
     );
 }
