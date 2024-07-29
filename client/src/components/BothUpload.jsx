@@ -51,7 +51,9 @@ export default function BothUpload() {
         setUploadSource("");
         setRegions(null);
         setFile(null);
+        setVideoId("")
         const id = getYouTubeID(urlInput);
+
         setVideoId(id);
 
         setRegions([{ x: 0, y: 0, width: 50, height: 50, data: { index: 0 } }]);
@@ -112,9 +114,10 @@ export default function BothUpload() {
             />
 
             <button className="button" onClick={handleChoose}>Upload Video</button>
-
+            {(videoId || file) && <p>Drag the green box to cover the region of the sheet music.</p>}
             {videoId && (
                 <div className="video-container">
+                    
                     <RegionSelect
                         regions={regions}
                         onChange={regionsOnChange}
