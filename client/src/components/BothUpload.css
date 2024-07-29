@@ -17,11 +17,21 @@
 .title {
     font-size: 32px;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 30px;
+    color: black;
+    margin-bottom: 10px;
     margin-top:60px;
     text-align: center;
 }
+
+p {
+    font-size: 18px;
+    font-weight:normal;
+    color: black;
+    margin-bottom: 5px;
+    margin-top:5px;
+    text-align: center;
+}
+
 
 .form {
     display: flex;
@@ -29,11 +39,10 @@
     align-items: center;
     width: 100%;
     max-width: 400px;
+    margin-top:20px;
 }
 
 .form label {
-    font-size: 18px;
-    color: #555;
     margin-bottom: 10px;
     text-align: center;
 }
@@ -41,7 +50,6 @@
 .input-container {
     display: flex;
     width: 100%;
-    margin-bottom: 10px;
 }
 
 .input-text {

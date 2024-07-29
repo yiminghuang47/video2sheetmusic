@@ -89,7 +89,8 @@ export default function BothUpload() {
 
     return (
         <div className="container">
-            <div className="title">Sheet Music Tool</div>
+            <p className="title">Video to Sheet Music PDF</p>
+            <p className="description">Convert sheet music video to pdf</p>
             <form className="form" onSubmit={handleUrlChange}>
                 <label>Enter YouTube link: </label>
                 <div className="input-container">
@@ -104,7 +105,7 @@ export default function BothUpload() {
                 </div>
             </form>
 
-            <label>or</label>
+            <p>or</p>
             <input
                 ref={inputRef}
                 type="file"
