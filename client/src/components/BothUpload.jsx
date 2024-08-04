@@ -6,9 +6,9 @@ import getYouTubeID from "get-youtube-id";
 import "./BothUpload.css";
 import download from "downloadjs";
 import axios from "axios";
-const API_URL = process.env.REACT_APP_API_URL;
 
 export default function BothUpload() {
+    const API_URL = process.env.REACT_APP_API_URL;
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
@@ -82,12 +82,16 @@ export default function BothUpload() {
         };
 
         try {
-            const response = await axios.post(`${API_URL}/youtube-upload`, payload, {
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                responseType: "blob",
-            });
+            const response = await axios.post(
+                `${API_URL}/youtube-upload`,
+                payload,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    responseType: "blob",
+                }
+            );
             download(response.data, "Sheet Music", "application/pdf");
             setStatus(response.statusText);
         } catch (error) {
