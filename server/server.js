@@ -45,7 +45,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
 
   const output = pythonProcess.stdout.toString().trim();
   console.log(output);
-  res.json({ output: output });
+  //res.json({ output: output });
+  res.sendFile(output,{ root: '.'});
 });
 
 
@@ -70,9 +71,10 @@ app.post('/youtube-upload',  (req, res) => {
     return res.status(500).send({ error: 'Error executing python script' });
   }
 
-  const output = pythonProcess.stdout.toString().trim();
-  console.log(output);
-  res.json({ output: output });
+  //const output = pythonProcess.stdout.toString().trim();
+  //console.log(output);
+  //res.json({ output: output });
+  res.sendFile('sheets/result.pdf',{ root: '.' });
   
 });
 

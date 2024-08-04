@@ -28,7 +28,7 @@ display_frame = None
 images = []
 
 FPS = cap.get(cv.CAP_PROP_FPS)
-SECONDS_PER_CAPTURE = 30
+SECONDS_PER_CAPTURE = 3
 FRAMES_PER_CAPTURE = int(FPS * SECONDS_PER_CAPTURE)
 
 frame_count = 0
@@ -81,7 +81,8 @@ cap.release()
 cv.destroyAllWindows()
 
 # save images to a PDF
-pdf_path = f'sheets/Sheet Music of {file_name}.pdf'
+# pdf_path = f'sheets/Sheet Music of {file_name}.pdf'
+pdf_path = 'sheets/result.pdf'
 if images:
     images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
     #print("PDF saved as", pdf_path)

@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 # Ensure there are enough command line arguments
 if len(sys.argv) < 6:
-    print("Usage: script_youtube.py <youtube url> <X0_percent> <Y0_percent> <X1_percent> <Y1_percent>")
+    #print("Usage: script_youtube.py <youtube url> <X0_percent> <Y0_percent> <X1_percent> <Y1_percent>")
     sys.exit(1)
 
 youtube_url = sys.argv[1]
@@ -22,7 +22,7 @@ X1_percent = int(float(sys.argv[4]))
 Y1_percent = int(float(sys.argv[5]))
 
 if not cap.isOpened():
-    print("Error: Could not open video.")
+    #print("Error: Could not open video.")
     sys.exit(1)
 
 prev_frame = None
@@ -47,7 +47,7 @@ def is_similar(frame1, frame2):
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
-        print("Can't receive frame (stream end?). Exiting ...")
+        #print("Can't receive frame (stream end?). Exiting ...")
         break
     
     frame_count += 1
@@ -95,12 +95,14 @@ def getTitle(url):
     return title
 title = getTitle(youtube_url)
 # Uncomment to save images to a PDF
-pdf_path = f'sheets/Sheet Music.pdf'
+# pdf_path = f'sheets/Sheet Music.pdf'
+pdf_path = 'sheets/result.pdf'
 print(pdf_path)
 if images:
     images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
-    print("PDF saved as", pdf_path)
+    #print("PDF saved as", pdf_path)
 else:
-    print("No images captured")
+    #print("No images captured")
+    pass
 
-print("done")
+#print("done")

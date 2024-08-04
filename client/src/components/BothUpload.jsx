@@ -4,6 +4,8 @@ import RegionSelect from "react-region-select";
 import YouTube from "react-youtube";
 import getYouTubeID from "get-youtube-id";
 import "./BothUpload.css";
+import download from "downloadjs";
+import axios from "axios";
 
 export default function BothUpload() {
     const inputRef = useRef();
@@ -37,14 +39,14 @@ export default function BothUpload() {
         let formData = new FormData();
         formData.append("file", file);
         formData.append("regions", JSON.stringify(regions));
-        await fetch("http://localhost:5050/upload", {
-            method: "POST",
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                
-                });
+        try {
+            const response = await axios.post("http://localhost:5050/upload", formData, {
+                responseType: "blob",
+            });
+            download(response.data, "Sheet Music", "application/pdf");
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleUrlChange = (event) => {
@@ -78,16 +80,34 @@ export default function BothUpload() {
             regions: regions,
         };
 
-        console.log(payload);
+        try {
+            const response = await axios.post("http://localhost:5050/youtube-upload", payload, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                responseType: "blob",
+            });
+            download(response.data, "Sheet Music", "application/pdf");
+            setStatus(response.statusText);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-        const response = await fetch("http://localhost:5050/youtube-upload", {
-            method: "POST",
-            body: JSON.stringify(payload),
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        if (response) setStatus(response.statusText);
+    const downloadFile = async () => {
+        try {
+            const result = await axios.get(`${API_URL}/download/${id}`, {
+                responseType: "blob",
+            });
+            const split = path.split("/");
+            const filename = split[split.length - 1];
+            setErrorMsg("");
+            return download(result.data, "Sheet Music", mimetype);
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                setErrorMsg("Error while downloading file. Try again later");
+            }
+        }
     };
 
     return (
