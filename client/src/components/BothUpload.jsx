@@ -8,7 +8,7 @@ import download from "downloadjs";
 import axios from "axios";
 
 export default function BothUpload() {
-    const API_URL = process.env.REACT_APP_API_URL;
+    
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
@@ -41,7 +41,7 @@ export default function BothUpload() {
         formData.append("file", file);
         formData.append("regions", JSON.stringify(regions));
         try {
-            const response = await axios.post(`${API_URL}/upload`, formData, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
                 responseType: "blob",
             });
             download(response.data, "Sheet Music", "application/pdf");
@@ -83,7 +83,7 @@ export default function BothUpload() {
 
         try {
             const response = await axios.post(
-                `${API_URL}/youtube-upload`,
+                `${process.env.REACT_APP_API_URL}/youtube-upload`,
                 payload,
                 {
                     headers: {
@@ -99,22 +99,7 @@ export default function BothUpload() {
         }
     };
 
-    const downloadFile = async () => {
-        try {
-            const result = await axios.get(`${API_URL}/download/${id}`, {
-                responseType: "blob",
-            });
-            const split = path.split("/");
-            const filename = split[split.length - 1];
-            setErrorMsg("");
-            return download(result.data, "Sheet Music", mimetype);
-        } catch (error) {
-            if (error.response && error.response.status === 400) {
-                setErrorMsg("Error while downloading file. Try again later");
-            }
-        }
-    };
-
+ 
     return (
         <div className="container">
             <p className="title">Video to Sheet Music PDF</p>
