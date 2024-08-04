@@ -8,7 +8,7 @@ import download from "downloadjs";
 import axios from "axios";
 
 export default function BothUpload() {
-    
+    const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
@@ -41,7 +41,7 @@ export default function BothUpload() {
         formData.append("file", file);
         formData.append("regions", JSON.stringify(regions));
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/upload`, formData, {
+            const response = await axios.post(`${API_URL}/upload`, formData, {
                 responseType: "blob",
             });
             download(response.data, "Sheet Music", "application/pdf");
@@ -83,7 +83,7 @@ export default function BothUpload() {
 
         try {
             const response = await axios.post(
-                `${process.env.REACT_APP_API_URL}/youtube-upload`,
+                `${API_URL}/youtube-upload`,
                 payload,
                 {
                     headers: {
@@ -99,7 +99,6 @@ export default function BothUpload() {
         }
     };
 
- 
     return (
         <div className="container">
             <p className="title">Video to Sheet Music PDF</p>
