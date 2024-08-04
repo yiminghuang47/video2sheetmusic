@@ -82,7 +82,10 @@ cv.destroyAllWindows()
 
 # save images to a PDF
 # pdf_path = f'sheets/Sheet Music of {file_name}.pdf'
-pdf_path = 'sheets/result.pdf'
+import random
+num = int(random.uniform(0, 1) * 10000000000)
+pdf_path = f'sheets/result{num}.pdf'
+
 if images:
     images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
     #print("PDF saved as", pdf_path)

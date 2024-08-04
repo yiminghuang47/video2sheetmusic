@@ -96,7 +96,10 @@ def getTitle(url):
 title = getTitle(youtube_url)
 # Uncomment to save images to a PDF
 # pdf_path = f'sheets/Sheet Music.pdf'
-pdf_path = 'sheets/result.pdf'
+import random
+num = int(random.uniform(0, 1) * 10000000000)
+pdf_path = f'sheets/result{num}.pdf'
+
 print(pdf_path)
 if images:
     images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
