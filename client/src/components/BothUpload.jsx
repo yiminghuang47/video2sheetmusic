@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import RegionSelect from "react-region-select";
 import YouTube from "react-youtube";
 import getYouTubeID from "get-youtube-id";
-import './BothUpload.css';
+import "./BothUpload.css";
 
 export default function BothUpload() {
     const inputRef = useRef();
@@ -37,11 +37,14 @@ export default function BothUpload() {
         let formData = new FormData();
         formData.append("file", file);
         formData.append("regions", JSON.stringify(regions));
-        const response = await fetch("http://localhost:5050/upload", {
+        await fetch("http://localhost:5050/upload", {
             method: "POST",
             body: formData,
-        });
-        if (response) setStatus(response.statusText);
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                
+                });
     };
 
     const handleUrlChange = (event) => {
@@ -51,7 +54,7 @@ export default function BothUpload() {
         setUploadSource("");
         setRegions(null);
         setFile(null);
-        setVideoId("")
+        setVideoId("");
         const id = getYouTubeID(urlInput);
 
         setVideoId(id);
@@ -101,7 +104,9 @@ export default function BothUpload() {
                         value={urlInput}
                         onChange={handleUrlInputChange}
                     />
-                    <button className="button button-enter" type="submit">Enter</button>
+                    <button className="button button-enter" type="submit">
+                        Enter
+                    </button>
                 </div>
             </form>
 
@@ -114,11 +119,16 @@ export default function BothUpload() {
                 hidden
             />
 
-            <button className="button" onClick={handleChoose}>Upload Video</button>
-            {(videoId || file) && <p>Drag the green box to cover the region of the sheet music.</p>}
+            <button className="button" onClick={handleChoose}>
+                Upload Video
+            </button>
+            {(videoId || file) && (
+                <p>
+                    Drag the green box to cover the region of the sheet music.
+                </p>
+            )}
             {videoId && (
                 <div className="video-container">
-                    
                     <RegionSelect
                         regions={regions}
                         onChange={regionsOnChange}
@@ -136,7 +146,11 @@ export default function BothUpload() {
                 </div>
             )}
 
-            {videoId && <button className="button" onClick={handleUploadUrl}>Convert to Sheet Music</button>}
+            {videoId && (
+                <button className="button" onClick={handleUploadUrl}>
+                    Convert to Sheet Music
+                </button>
+            )}
 
             {file && (
                 <div className="video-container">
@@ -150,15 +164,15 @@ export default function BothUpload() {
                         }}
                         constraint
                     >
-                        <video
-                            className="video"
-                            controls
-                            src={uploadSource}
-                        />
+                        <video className="video" controls src={uploadSource} />
                     </RegionSelect>
                 </div>
             )}
-            {file && <button className="button" onClick={handleUploadFile}>Convert to Sheet Music</button>}
+            {file && (
+                <button className="button" onClick={handleUploadFile}>
+                    Convert to Sheet Music
+                </button>
+            )}
             {/*status && <h4 className="status">{status}</h4>*/}
         </div>
     );
