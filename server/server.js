@@ -21,6 +21,10 @@ const upload = multer({ storage: storage });
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Testing ok");
+});
+
 app.post("/upload", upload.single("file"), (req, res) => {
     const regions = JSON.parse(req.body.regions);
     const { x, y, width, height } = regions[0];
