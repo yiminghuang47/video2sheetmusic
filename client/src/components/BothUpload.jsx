@@ -8,7 +8,8 @@ import download from "downloadjs";
 import axios from "axios";
 
 export default function BothUpload() {
-    const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
+    // const API_URL = "https://extract-sheet-music-from-video-server.vercel.app"; 
+    const API_URL = "http://localhost:5050"; 
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
