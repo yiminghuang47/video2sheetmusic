@@ -157,32 +157,33 @@ app.post("/youtube-upload", async (req, res) => {
             X1,
             Y1,
         ]);
+        
+        let stdoutData = [];
+
+        pythonProcess.stdout.on("data", (data) => {
+            stdoutData.push(data);
+        });
+
+        pythonProcess.stderr.on("data", (data) => {
+            //console.error(`stderr: ${data}`);
+        });
+
+        pythonProcess.on("close", async (code) => {
+            if (code !== 0) {
+                return res
+                    .status(500)
+                    .send({ error: "Error executing python script" });
+            }
+
+            const output = Buffer.concat(stdoutData);
+            if (output.length === 0) {
+                return res.status(500).send({ error: "No PDF generated" });
+            }
+
+            res.setHeader("Content-Type", "application/pdf");
+            res.send(output);
+        });
         res.send("test")
-        // let stdoutData = [];
-
-        // pythonProcess.stdout.on("data", (data) => {
-        //     stdoutData.push(data);
-        // });
-
-        // pythonProcess.stderr.on("data", (data) => {
-        //     console.error(`stderr: ${data}`);
-        // });
-
-        // pythonProcess.on("close", async (code) => {
-        //     if (code !== 0) {
-        //         return res
-        //             .status(500)
-        //             .send({ error: "Error executing python script" });
-        //     }
-
-        //     const output = Buffer.concat(stdoutData);
-        //     if (output.length === 0) {
-        //         return res.status(500).send({ error: "No PDF generated" });
-        //     }
-
-        //     res.setHeader("Content-Type", "application/pdf");
-        //     res.send(output);
-        // });
     } catch (error) {
      //   console.error("Error in /youtube-upload:", error);
        res.status(500).send({ error: "Internal Server Error" + error });
