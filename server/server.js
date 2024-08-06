@@ -134,7 +134,7 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/youtube-upload", async (req, res) => {
-    console.log("test1")
+    
     res.send("test")
     //try {
         // console.log("test");
