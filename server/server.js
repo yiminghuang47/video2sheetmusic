@@ -3,6 +3,8 @@ import cors from "cors";
 import multer from "multer";
 import { spawnSync } from "child_process";
 import bodyParser from "body-parser";
+import { generateUploadURL } from "./s3.js";
+
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -22,7 +24,15 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Testing ok");
+    res.send("Testing ok");
+});
+
+
+
+app.get("/s3Url", async (req, res) => {
+    const url = await generateUploadURL();
+    
+    res.send({ url });
 });
 
 app.post("/upload", upload.single("file"), (req, res) => {

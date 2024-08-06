@@ -8,8 +8,8 @@ import download from "downloadjs";
 import axios from "axios";
 
 export default function BothUpload() {
-    // const API_URL = "https://extract-sheet-music-from-video-server.vercel.app"; 
-    const API_URL = "http://localhost:5050"; 
+    // const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
+    const API_URL = "http://localhost:5050";
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
@@ -41,6 +41,23 @@ export default function BothUpload() {
         let formData = new FormData();
         formData.append("file", file);
         formData.append("regions", JSON.stringify(regions));
+
+        const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
+            res.json()
+        );
+        console.log(url);
+
+        await fetch(url, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+            body: file,
+        });
+
+        const videoUrl = url.split("?")[0];
+        console.log(videoUrl);
+        /*
         try {
             const response = await axios.post(`${API_URL}/upload`, formData, {
                 responseType: "blob",
@@ -49,6 +66,7 @@ export default function BothUpload() {
         } catch (error) {
             console.error(error);
         }
+            */
     };
 
     const handleUrlChange = (event) => {
