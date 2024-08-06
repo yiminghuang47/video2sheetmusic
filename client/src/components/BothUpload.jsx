@@ -5,6 +5,7 @@ import YouTube from "react-youtube";
 import getYouTubeID from "get-youtube-id";
 import "./BothUpload.css";
 import download from "downloadjs";
+import { Blob,Buffer } from "buffer";
 import axios from "axios";
 
 export default function BothUpload() {
@@ -57,6 +58,22 @@ export default function BothUpload() {
 
         const videoUrl = url.split("?")[0];
         console.log(videoUrl);
+
+        try {
+            const response = await axios.post(`${API_URL}/upload`, {
+                videoUrl: videoUrl,
+                regions: JSON.stringify(regions),
+            }, {
+                responseType: "arraybuffer",
+            });
+            console.log(response.data)
+            const pdfBytes = new Uint8Array(response.data);
+            download(pdfBytes, "Sheet Music", "application/pdf");
+            
+        } catch (error) {
+            console.error(error);
+        }
+
         /*
         try {
             const response = await axios.post(`${API_URL}/upload`, formData, {

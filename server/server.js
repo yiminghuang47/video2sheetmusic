@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import multer from "multer";
 import { spawnSync } from "child_process";
+
+import { spawn } from "child_process";
 import bodyParser from "body-parser";
 import { generateUploadURL } from "./s3.js";
 
@@ -35,6 +37,9 @@ app.get("/s3Url", async (req, res) => {
     res.send({ url });
 });
 
+
+
+/*
 app.post("/upload", upload.single("file"), (req, res) => {
     const regions = JSON.parse(req.body.regions);
     const { x, y, width, height } = regions[0];
@@ -71,6 +76,61 @@ app.post("/upload", upload.single("file"), (req, res) => {
     //res.json({ output: output });
     res.sendFile(path, { root: "." });
 });
+*/
+
+
+
+app.post("/upload", async (req, res) => {
+    try {
+        const regions = JSON.parse(req.body.regions);
+        const { x, y, width, height } = regions[0];
+        const Y0 = y;
+        const Y1 = y + height;
+        const X0 = x;
+        const X1 = x + width;
+        
+        const videoUrl = req.body.videoUrl;
+
+        const pythonProcess = spawn("python", [
+            "script.py",
+            videoUrl,
+            X0,
+            Y0,
+            X1,
+            Y1,
+        ]);
+
+        let stdoutData = [];
+
+        pythonProcess.stdout.on('data', (data) => {
+            stdoutData.push(data);
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+
+        pythonProcess.on('close', async (code) => {
+            if (code !== 0) {
+                return res.status(500).send({ error: "Error executing python script" });
+            }
+
+            const output = Buffer.concat(stdoutData);
+            if (output.length === 0) {
+                return res.status(500).send({ error: "No PDF generated" });
+            }
+
+            res.setHeader("Content-Type", "application/pdf");
+            res.send(output);
+            //const s3UploadUrl = await uploadToS3(pdfBytes);  // Assume this function uploads bytes and returns the URL
+            //res.send({ url: s3UploadUrl });
+        });
+    } catch (error) {
+        console.error("Error in /upload:", error);
+        res.status(500).send({ error: "Internal Server Error" });
+    }
+});
+
 
 app.post("/youtube-upload", (req, res) => {
     const url = req.body.url;

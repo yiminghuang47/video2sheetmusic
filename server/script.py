@@ -3,6 +3,7 @@ import numpy as np
 from skimage import metrics
 from PIL import Image
 import sys
+import io
 
 # Ensure there are enough command line arguments
 if len(sys.argv) < 6:
@@ -10,7 +11,6 @@ if len(sys.argv) < 6:
     sys.exit(1)
 
 file_path = sys.argv[1]
-file_name = file_path[7:-4]
 cap = cv.VideoCapture(file_path)
 
 # Convert command line arguments to integers
@@ -80,18 +80,10 @@ while cap.isOpened():
 cap.release()
 cv.destroyAllWindows()
 
-# save images to a PDF
-# pdf_path = f'sheets/Sheet Music of {file_name}.pdf'
-import random
-num = int(random.uniform(0, 1) * 10000000000)
-pdf_path = f'sheets/result{num}.pdf'
-
 if images:
-    images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
-    #print("PDF saved as", pdf_path)
+    output = io.BytesIO()
+    images[0].save(output, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
+    output.seek(0)
+    sys.stdout.buffer.write(output.read())
 else:
-    #print("No images captured")
-    pass
-print(pdf_path)
-
-#print("done")
+    sys.stdout.buffer.write(b"")
