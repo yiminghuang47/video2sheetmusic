@@ -148,15 +148,15 @@ app.post("/youtube-upload", async (req, res) => {
         // console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
         // console.log(url);
-
-        const pythonProcess = spawn("python", [
-            "script_youtube.py",
-            url,
-            X0,
-            Y0,
-            X1,
-            Y1,
-        ]);
+        res.send("test")
+        // const pythonProcess = spawn("python", [
+        //     "script_youtube.py",
+        //     url,
+        //     X0,
+        //     Y0,
+        //     X1,
+        //     Y1,
+        // ]);
 
         // let stdoutData = [];
 
