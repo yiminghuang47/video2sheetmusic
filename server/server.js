@@ -19,6 +19,7 @@ const storage = multer.diskStorage({
     },
 });
 
+app.options('*', cors())
 var corsOptions = {
     origin: 'https://extract-sheet-music-from-video.vercel.app/',
     optionsSuccessStatus: 200 
