@@ -136,7 +136,8 @@ app.post("/upload", async (req, res) => {
 app.post("/youtube-upload", async (req, res) => {
 
     try {
-        const url = req.body.url;
+        console.log("test");
+        // const url = req.body.url;
         // const regions = JSON.parse(req.body.regions);
         // const { x, y, width, height } = regions[0];
         // const Y0 = y;
