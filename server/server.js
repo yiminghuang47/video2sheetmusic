@@ -7,7 +7,6 @@ import { spawn } from "child_process";
 import bodyParser from "body-parser";
 import { generateUploadURL } from "./s3.js";
 
-
 const PORT = process.env.PORT || 5050;
 const app = express();
 
@@ -29,15 +28,11 @@ app.get("/", (req, res) => {
     res.send("Testing ok");
 });
 
-
-
 app.get("/s3Url", async (req, res) => {
     const url = await generateUploadURL();
-    
+
     res.send({ url });
 });
-
-
 
 /*
 app.post("/upload", upload.single("file"), (req, res) => {
@@ -78,8 +73,6 @@ app.post("/upload", upload.single("file"), (req, res) => {
 });
 */
 
-
-
 app.post("/upload", async (req, res) => {
     try {
         const regions = JSON.parse(req.body.regions);
@@ -88,7 +81,7 @@ app.post("/upload", async (req, res) => {
         const Y1 = y + height;
         const X0 = x;
         const X1 = x + width;
-        
+
         const videoUrl = req.body.videoUrl;
 
         const pythonProcess = spawn("python", [
@@ -102,17 +95,19 @@ app.post("/upload", async (req, res) => {
 
         let stdoutData = [];
 
-        pythonProcess.stdout.on('data', (data) => {
+        pythonProcess.stdout.on("data", (data) => {
             stdoutData.push(data);
         });
 
-        pythonProcess.stderr.on('data', (data) => {
+        pythonProcess.stderr.on("data", (data) => {
             console.error(`stderr: ${data}`);
         });
 
-        pythonProcess.on('close', async (code) => {
+        pythonProcess.on("close", async (code) => {
             if (code !== 0) {
-                return res.status(500).send({ error: "Error executing python script" });
+                return res
+                    .status(500)
+                    .send({ error: "Error executing python script" });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -122,8 +117,6 @@ app.post("/upload", async (req, res) => {
 
             res.setHeader("Content-Type", "application/pdf");
             res.send(output);
-            //const s3UploadUrl = await uploadToS3(pdfBytes);  // Assume this function uploads bytes and returns the URL
-            //res.send({ url: s3UploadUrl });
         });
     } catch (error) {
         console.error("Error in /upload:", error);
@@ -131,10 +124,11 @@ app.post("/upload", async (req, res) => {
     }
 });
 
+app.post("/youtube-upload", async (req, res) => {
 
-app.post("/youtube-upload", (req, res) => {
-    const url = req.body.url;
-    const regions = req.body.regions;
+    try {
+        const url = req.body.url;
+    const regions = JSON.parse(req.body.regions);
     const { x, y, width, height } = regions[0];
     const Y0 = y;
     const Y1 = y + height;
@@ -144,7 +138,7 @@ app.post("/youtube-upload", (req, res) => {
 
     console.log(url);
 
-    const pythonProcess = spawnSync("python", [
+    const pythonProcess = spawn("python", [
         "script_youtube.py",
         url,
         X0,
@@ -153,19 +147,37 @@ app.post("/youtube-upload", (req, res) => {
         Y1,
     ]);
 
-    if (pythonProcess.error) {
-        console.error(
-            `Error executing python script: ${pythonProcess.error.message}`
-        );
-        return res.status(500).send({ error: "Error executing python script" });
-    }
+    let stdoutData = [];
 
-    const output = pythonProcess.stdout.toString().trim().split(/\r?\n/);
-    console.log(output);
-    const path = output[output.length - 1];
-    console.log(path);
-    //res.json({ output: output });
-    res.sendFile(path, { root: "." });
+    pythonProcess.stdout.on("data", (data) => {
+        stdoutData.push(data);
+    });
+
+    pythonProcess.stderr.on("data", (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    pythonProcess.on("close", async (code) => {
+        if (code !== 0) {
+            return res
+                .status(500)
+                .send({ error: "Error executing python script" });
+        }
+
+        const output = Buffer.concat(stdoutData);
+        if (output.length === 0) {
+            return res.status(500).send({ error: "No PDF generated" });
+        }
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.send(output);
+    });
+        
+    } catch (error) {
+        console.error("Error in /youtube-upload:", error);
+        res.status(500).send({ error: "Internal Server Error" });
+    }
+    
 });
 
 // start the Express server

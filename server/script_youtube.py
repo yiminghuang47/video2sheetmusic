@@ -6,6 +6,7 @@ import sys
 from cap_from_youtube import cap_from_youtube
 import requests
 from bs4 import BeautifulSoup
+import io
 
 # Ensure there are enough command line arguments
 if len(sys.argv) < 6:
@@ -83,29 +84,10 @@ cap.release()
 cv.destroyAllWindows()
 
 
-def getTitle(url):
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text)
-
-    link = soup.find_all(name="title")[0]
-    title = str(link)
-    title = title.replace("<title>","")
-    title = title.replace("</title>","")
-
-    return title
-title = getTitle(youtube_url)
-# Uncomment to save images to a PDF
-# pdf_path = f'sheets/Sheet Music.pdf'
-import random
-num = int(random.uniform(0, 1) * 10000000000)
-pdf_path = f'sheets/result{num}.pdf'
-
-print(pdf_path)
 if images:
-    images[0].save(pdf_path, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
-    #print("PDF saved as", pdf_path)
+    output = io.BytesIO()
+    images[0].save(output, "PDF", resolution=100.0, save_all=True, append_images=images[1:])
+    output.seek(0)
+    sys.stdout.buffer.write(output.read())
 else:
-    #print("No images captured")
-    pass
-
-#print("done")
+    sys.stdout.buffer.write(b"")

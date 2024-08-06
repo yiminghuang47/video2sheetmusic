@@ -9,8 +9,8 @@ import { Blob,Buffer } from "buffer";
 import axios from "axios";
 
 export default function BothUpload() {
-    // const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
-    const API_URL = "http://localhost:5050";
+    const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
+    //const API_URL = "http://localhost:5050";
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
@@ -118,21 +118,21 @@ export default function BothUpload() {
         };
 
         try {
-            const response = await axios.post(
-                `${API_URL}/youtube-upload`,
-                payload,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    responseType: "blob",
-                }
-            );
-            download(response.data, "Sheet Music", "application/pdf");
-            setStatus(response.statusText);
+            const response = await axios.post(`${API_URL}/youtube-upload`, {
+                url: url,
+                regions: JSON.stringify(regions),
+            }, {
+                responseType: "arraybuffer",
+            });
+            console.log(response.data)
+            const pdfBytes = new Uint8Array(response.data);
+            download(pdfBytes, "Sheet Music", "application/pdf");
+            
         } catch (error) {
             console.error(error);
         }
+
+
     };
 
     return (
