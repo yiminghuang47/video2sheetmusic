@@ -21,9 +21,9 @@ const storage = multer.diskStorage({
 
 //app.options('*', cors())
 var corsOptions = {
-    origin: "*"
-  }
-  app.use(cors(corsOptions))
+    origin: "*",
+};
+app.use(cors(corsOptions));
 
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "https://extract-sheet-music-from-video.vercel.app/"); // update to match the domain you will make the request from
@@ -134,59 +134,57 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/youtube-upload", async (req, res) => {
+    res.send("testing")
+    // try {
+    //     const url = req.body.url;
+    //     const regions = JSON.parse(req.body.regions);
+    //     const { x, y, width, height } = regions[0];
+    //     const Y0 = y;
+    //     const Y1 = y + height;
+    //     const X0 = x;
+    //     const X1 = x + width;
+    //     console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
-    try {
-        const url = req.body.url;
-    const regions = JSON.parse(req.body.regions);
-    const { x, y, width, height } = regions[0];
-    const Y0 = y;
-    const Y1 = y + height;
-    const X0 = x;
-    const X1 = x + width;
-    console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
+    //     console.log(url);
 
-    console.log(url);
+    //     const pythonProcess = spawn("python", [
+    //         "script_youtube.py",
+    //         url,
+    //         X0,
+    //         Y0,
+    //         X1,
+    //         Y1,
+    //     ]);
 
-    const pythonProcess = spawn("python", [
-        "script_youtube.py",
-        url,
-        X0,
-        Y0,
-        X1,
-        Y1,
-    ]);
+    //     let stdoutData = [];
 
-    let stdoutData = [];
+    //     pythonProcess.stdout.on("data", (data) => {
+    //         stdoutData.push(data);
+    //     });
 
-    pythonProcess.stdout.on("data", (data) => {
-        stdoutData.push(data);
-    });
+    //     pythonProcess.stderr.on("data", (data) => {
+    //         console.error(`stderr: ${data}`);
+    //     });
 
-    pythonProcess.stderr.on("data", (data) => {
-        console.error(`stderr: ${data}`);
-    });
+    //     pythonProcess.on("close", async (code) => {
+    //         if (code !== 0) {
+    //             return res
+    //                 .status(500)
+    //                 .send({ error: "Error executing python script" });
+    //         }
 
-    pythonProcess.on("close", async (code) => {
-        if (code !== 0) {
-            return res
-                .status(500)
-                .send({ error: "Error executing python script" });
-        }
+    //         const output = Buffer.concat(stdoutData);
+    //         if (output.length === 0) {
+    //             return res.status(500).send({ error: "No PDF generated" });
+    //         }
 
-        const output = Buffer.concat(stdoutData);
-        if (output.length === 0) {
-            return res.status(500).send({ error: "No PDF generated" });
-        }
-
-        res.setHeader("Content-Type", "application/pdf");
-        res.send(output);
-    });
-        
-    } catch (error) {
-        console.error("Error in /youtube-upload:", error);
-        res.status(500).send({ error: "Internal Server Error" });
-    }
-    
+    //         res.setHeader("Content-Type", "application/pdf");
+    //         res.send(output);
+    //     });
+    // } catch (error) {
+    //     console.error("Error in /youtube-upload:", error);
+    //     res.status(500).send({ error: "Internal Server Error" + error });
+    // }
 });
 
 // start the Express server
