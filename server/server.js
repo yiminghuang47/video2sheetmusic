@@ -134,19 +134,20 @@ app.post("/upload", async (req, res) => {
 });
 
 app.post("/youtube-upload", async (req, res) => {
-
+    console.log("test1")
+    res.send("test")
     //try {
-        console.log("test");
-        const url = req.body.url;
-        const regions = JSON.parse(req.body.regions);
-        const { x, y, width, height } = regions[0];
-        const Y0 = y;
-        const Y1 = y + height;
-        const X0 = x;
-        const X1 = x + width;
-        console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
+        // console.log("test");
+        // const url = req.body.url;
+        // const regions = JSON.parse(req.body.regions);
+        // const { x, y, width, height } = regions[0];
+        // const Y0 = y;
+        // const Y1 = y + height;
+        // const X0 = x;
+        // const X1 = x + width;
+        // console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
-        console.log(url);
+        // console.log(url);
 
         // const pythonProcess = spawn("python", [
         //     "script_youtube.py",
