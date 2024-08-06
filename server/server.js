@@ -165,7 +165,8 @@ app.post("/youtube-upload", async (req, res) => {
         });
 
         pythonProcess.stderr.on("data", (data) => {
-            //console.error(`stderr: ${data}`);
+            res.send(`stderr: ${data}`);
+            
         });
 
         pythonProcess.on("close", async (code) => {
