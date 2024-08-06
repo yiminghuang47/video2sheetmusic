@@ -136,7 +136,6 @@ app.post("/upload", async (req, res) => {
 app.post("/youtube-upload", async (req, res) => {
     
     try {
-        // console.log("test");
         const url = req.body.url;
        
         const regions = JSON.parse(req.body.regions);
@@ -145,9 +144,9 @@ app.post("/youtube-upload", async (req, res) => {
         const Y1 = y + height;
         const X0 = x;
         const X1 = x + width;
-        // console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
+         console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
-        // console.log(url);
+         console.log(url);
        
         const pythonProcess = spawn("python", [
             "script_youtube.py",
@@ -165,7 +164,7 @@ app.post("/youtube-upload", async (req, res) => {
         });
 
         pythonProcess.stderr.on("data", (data) => {
-            res.send(`stderr: ${data}`);
+            console.log(`stderr: ${data}`);
             
         });
 
@@ -184,7 +183,6 @@ app.post("/youtube-upload", async (req, res) => {
             res.setHeader("Content-Type", "application/pdf");
             res.send(output);
         });
-        //res.send("test")
     } catch (error) {
      //   console.error("Error in /youtube-upload:", error);
        res.status(500).send({ error: "Internal Server Error" + error });
