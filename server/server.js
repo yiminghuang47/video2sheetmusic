@@ -19,17 +19,17 @@ const storage = multer.diskStorage({
     },
 });
 
-// var corsOptions = {
-//     origin: '*',
-//     optionsSuccessStatus: 200 
-//   }
-//   app.use(cors(corsOptions))
+var corsOptions = {
+    origin: 'https://extract-sheet-music-from-video.vercel.app/',
+    optionsSuccessStatus: 200 
+  }
+  app.use(cors(corsOptions))
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://extract-sheet-music-from-video.vercel.app/"); // update to match the domain you will make the request from
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "https://extract-sheet-music-from-video.vercel.app/"); // update to match the domain you will make the request from
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
 
 app.use(express.json());
 
