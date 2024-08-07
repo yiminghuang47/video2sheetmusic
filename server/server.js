@@ -126,8 +126,10 @@ app.post("/upload", async (req, res) => {
     }
 });
 
+
 app.post("/youtube-upload", async (req, res) => {
-    
+    res.send("test ok")
+    /*
     try {
         const url = req.body.url;
        
@@ -180,6 +182,7 @@ app.post("/youtube-upload", async (req, res) => {
      //   console.error("Error in /youtube-upload:", error);
        res.status(500).send({ error: "Internal Server Error" + error });
     }
+       */
 });
 
 // start the Express server
