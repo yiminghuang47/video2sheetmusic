@@ -1,16 +1,17 @@
-import cv2 as cv
-import numpy as np
-from skimage import metrics
-from PIL import Image
-import sys
-import io
+print("hello world")
+# import cv2 as cv
+# import numpy as np
+# from skimage import metrics
+# from PIL import Image
+# import sys
+# import io
 
 # Ensure there are enough command line arguments
-if len(sys.argv) < 6:
+#if len(sys.argv) < 6:
     #print("Usage: script.py <file_path> <X0_percent> <Y0_percent> <X1_percent> <Y1_percent>")
-    sys.exit(1)
+    #sys.exit(1)
 
-file_path = sys.argv[1]
+# file_path = sys.argv[1]
 # cap = cv.VideoCapture(file_path)
 
 # # Convert command line arguments to integers

@@ -121,8 +121,8 @@ app.post("/upload", async (req, res) => {
             res.send(output);
         });
     } catch (error) {
-        console.error("Error in /upload:", error);
-        res.status(500).send({ error: "Internal Server Error" });
+        //console.error("Error in /upload:", error);
+        res.status(500).send({ error: "Internal Server Error"+error });
     }
 });
 
