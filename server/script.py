@@ -77,9 +77,8 @@ while cap.isOpened():
     # if cv.waitKey(1) == ord('q'):
     #     break
 
-print("test")
 cap.release()
-cv.destroyAllWindows()
+# cv.destroyAllWindows()
 
 if images:
     output = io.BytesIO()

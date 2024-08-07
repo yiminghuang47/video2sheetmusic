@@ -74,12 +74,12 @@ while cap.isOpened():
                 images.append(np_to_PIL(display_frame))
         prev_frame = frame
 
-    cv.imshow('frame', frame)
-    if cv.waitKey(1) == ord('q'):
-        break
+    # cv.imshow('frame', frame)
+    #if cv.waitKey(1) == ord('q'):
+    #    break
 
 cap.release()
-cv.destroyAllWindows()
+#cv.destroyAllWindows()
 
 
 if images:
