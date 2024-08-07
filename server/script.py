@@ -11,7 +11,7 @@ if len(sys.argv) < 6:
     sys.exit(1)
 
 file_path = sys.argv[1]
-cap = cv.VideoCapture(file_path)
+# cap = cv.VideoCapture(file_path)
 
 # # Convert command line arguments to integers
 # X0_percent = int(float(sys.argv[2]))
