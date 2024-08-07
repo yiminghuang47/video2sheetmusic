@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     },
 });
 
-//app.options('*', cors())
+app.options('*', cors())
 var corsOptions = {
     origin: "*",
 };
