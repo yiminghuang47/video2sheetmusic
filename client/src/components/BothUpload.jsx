@@ -14,7 +14,7 @@ import dotenv from 'dotenv'
 export default function BothUpload() {
     //const API_URL = import.meta.env.VITE_API_URL;
     //const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
-    const API_URL = "https://video-to-sheet-music.onrender.com/";
+    const API_URL = "https://video-to-sheet-music.onrender.com";
    // const API_URL = "http://localhost:5050";
     // const API_URL = "https://extract-sheet-music-from-vid-git-72ea1a-yiminghuang47s-projects.vercel.app"; 
     const inputRef = useRef();
