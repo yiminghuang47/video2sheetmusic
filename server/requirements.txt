@@ -6,4 +6,3 @@ opencv_python==4.7.0.72
 Pillow==10.4.0
 Requests==2.32.3
 skimage==0.0
-~umpy==1.25.1
