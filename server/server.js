@@ -96,20 +96,20 @@ app.post("/upload", async (req, res) => {
         ]);
 
         let stdoutData = [];
+        let stderrData = [];
 
         pythonProcess.stdout.on("data", (data) => {
             stdoutData.push(data);
         });
 
         pythonProcess.stderr.on("data", (data) => {
-            console.log(`stderr: ${data}`);
+            stderrData.push(data);
         });
 
         pythonProcess.on("close", async (code) => {
             if (code !== 0) {
-                return res
-                    .status(500)
-                    .send({ error: "Error executing python script" });
+                const stderrOutput = Buffer.concat(stderrData).toString();
+                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -121,26 +121,20 @@ app.post("/upload", async (req, res) => {
             res.send(output);
         });
     } catch (error) {
-        //console.error("Error in /upload:", error);
-        res.status(500).send({ error: "Internal Server Error"+error });
+        res.status(500).send({ error: "Internal Server Error", details: error.message });
     }
 });
 
 app.post("/youtube-upload", async (req, res) => {
-    
     try {
         const url = req.body.url;
-       
         const regions = JSON.parse(req.body.regions);
         const { x, y, width, height } = regions[0];
         const Y0 = y;
         const Y1 = y + height;
         const X0 = x;
         const X1 = x + width;
-        // console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
-        // console.log(url);
-       
         const pythonProcess = spawn("python", [
             "script_youtube.py",
             url,
@@ -149,23 +143,22 @@ app.post("/youtube-upload", async (req, res) => {
             X1,
             Y1,
         ]);
-        
+
         let stdoutData = [];
+        let stderrData = [];
 
         pythonProcess.stdout.on("data", (data) => {
             stdoutData.push(data);
         });
 
         pythonProcess.stderr.on("data", (data) => {
-            console.log(`stderr: ${data}`);
-            
+            stderrData.push(data);
         });
 
         pythonProcess.on("close", async (code) => {
             if (code !== 0) {
-                return res
-                    .status(500)
-                    .send({ error: "Error executing python script" });
+                const stderrOutput = Buffer.concat(stderrData).toString();
+                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -176,13 +169,10 @@ app.post("/youtube-upload", async (req, res) => {
             res.setHeader("Content-Type", "application/pdf");
             res.send(output);
         });
-        
     } catch (error) {
-     //   console.error("Error in /youtube-upload:", error);
-       res.status(500).send({ error: "Internal Server Error" + error });
+        res.status(500).send({ error: "Internal Server Error", details: error.message });
     }
 });
-
 // start the Express server
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
