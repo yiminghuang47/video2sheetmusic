@@ -102,7 +102,7 @@ app.post("/upload", async (req, res) => {
         });
 
         pythonProcess.stderr.on("data", (data) => {
-            console.error(`stderr: ${data}`);
+            console.log(`stderr: ${data}`);
         });
 
         pythonProcess.on("close", async (code) => {
@@ -142,7 +142,7 @@ app.post("/youtube-upload", async (req, res) => {
         // console.log(url);
        
         const pythonProcess = spawn("python", [
-            "test.py",
+            "script_youtube.py",
             url,
             X0,
             Y0,
