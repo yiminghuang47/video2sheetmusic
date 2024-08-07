@@ -10,14 +10,7 @@ import { generateUploadURL } from "./s3.js";
 const PORT = process.env.PORT || 5050;
 const app = express();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "videos/");
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    },
-});
+
 
 app.options('*', cors())
 var corsOptions = {
