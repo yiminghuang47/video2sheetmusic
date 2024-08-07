@@ -4,8 +4,6 @@ from skimage import metrics
 from PIL import Image
 import sys
 from cap_from_youtube import cap_from_youtube
-import requests
-from bs4 import BeautifulSoup
 import io
 
 # Ensure there are enough command line arguments
