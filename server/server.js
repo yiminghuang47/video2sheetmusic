@@ -137,11 +137,10 @@ app.post("/youtube-upload", async (req, res) => {
         const Y1 = y + height;
         const X0 = x;
         const X1 = x + width;
-        res.send("test")
         // console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
 
         // console.log(url);
-       /*
+       
         const pythonProcess = spawn("python", [
             "script_youtube.py",
             url,
@@ -177,7 +176,7 @@ app.post("/youtube-upload", async (req, res) => {
             res.setHeader("Content-Type", "application/pdf");
             res.send(output);
         });
-        */
+        
     } catch (error) {
      //   console.error("Error in /youtube-upload:", error);
        res.status(500).send({ error: "Internal Server Error" + error });
