@@ -15,7 +15,7 @@ export default function BothUpload() {
     //const API_URL = import.meta.env.VITE_API_URL;
     //const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
    // const API_URL = "http://localhost:5050";
-   const API_URL = "https://vercel.live/link/extract-sheet-music-from-vid-git-1e65f6-yiminghuang47s-projects.vercel.app";
+   const API_URL = "https://extract-sheet-music-from-vid-git-72ea1a-yiminghuang47s-projects.vercel.app";
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
