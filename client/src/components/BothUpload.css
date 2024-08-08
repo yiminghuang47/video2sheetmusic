@@ -105,9 +105,8 @@ p {
     position:relative;
 }
 .status {
-    margin-top: 20px;
-    font-size: 18px;
-    color: green;
+    margin-top: 40px;
+    font-size: 32px;
     text-align: center;
 }
 
@@ -117,3 +116,13 @@ p {
     
 }
 
+
+.upload-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width:100%;
+
+}
