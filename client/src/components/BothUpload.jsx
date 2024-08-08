@@ -12,9 +12,9 @@ import dotenv from 'dotenv'
 
 
 export default function BothUpload() {
-    //const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = import.meta.env.VITE_API_URL;
     //const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
-    const API_URL = "https://video-to-sheet-music.onrender.com";
+    //const API_URL = "https://video-to-sheet-music.onrender.com";
    // const API_URL = "http://localhost:5050";
     // const API_URL = "https://extract-sheet-music-from-vid-git-72ea1a-yiminghuang47s-projects.vercel.app"; 
     const inputRef = useRef();
@@ -148,9 +148,9 @@ export default function BothUpload() {
     return (
         <div className="container">
             <p className="title">Video to Sheet Music PDF</p>
-            <p className="description">Convert sheet music video to pdf</p>
+            <p className="description">Extract sheet music pdf from video. <a>Example</a></p>
             <form className="form" onSubmit={handleUrlChange}>
-                <label>Enter YouTube link: </label>
+                <p>Enter YouTube link: </p>
                 <div className="input-container">
                     <input
                         className="input-text"
@@ -175,7 +175,7 @@ export default function BothUpload() {
             />
 
             <button className="button" onClick={handleChoose}>
-                Upload Video
+                Upload from computer
             </button>
             {(videoId || file) && (
                 <p>
@@ -190,19 +190,18 @@ export default function BothUpload() {
                         maxRegions={1}
                         regionStyle={{
                             background: "rgba(0, 255, 0, 0.5)",
-                            zIndex: 2,
+                            zIndex: 2
                         }}
                         constraint
                     >
-                        <div style={{ zIndex: 1 }}>
-                            <YouTube videoId={videoId} id="video" />
-                        </div>
+                            <YouTube  className="youtube-video-container" videoId={videoId} id="youtube-video" />
+                       
                     </RegionSelect>
                 </div>
             )}
 
             {videoId && (
-                <button className="button" onClick={handleUploadUrl}>
+                <button className="button convert-button"  onClick={handleUploadUrl}>
                     Convert to Sheet Music
                 </button>
             )}
@@ -224,7 +223,7 @@ export default function BothUpload() {
                 </div>
             )}
             {file && (
-                <button className="button" onClick={handleUploadFile}>
+                <button className="button convert-button" onClick={handleUploadFile}>
                     Convert to Sheet Music
                 </button>
             )}
