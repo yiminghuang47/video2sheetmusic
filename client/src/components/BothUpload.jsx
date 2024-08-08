@@ -53,7 +53,7 @@ export default function BothUpload() {
         );
         console.log(url);
 
-        setStatus("Converting...");
+        setStatus("Converting...it might takea few minutes depending on the length of the video");
 
         await fetch(url, {
             method: "PUT",
@@ -128,7 +128,7 @@ export default function BothUpload() {
             url: url,
             regions: regions,
         };
-        setStatus("Converting...");
+        setStatus("Converting...it might takea few minutes depending on the length of the video");
         try {
             const response = await axios.post(
                 `${API_URL}/youtube-upload`,
