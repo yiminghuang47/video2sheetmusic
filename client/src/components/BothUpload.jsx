@@ -11,19 +11,15 @@ import dotenv from "dotenv";
 
 export default function BothUpload() {
     const API_URL = import.meta.env.VITE_API_URL;
-    //const API_URL = "https://extract-sheet-music-from-video-server.vercel.app";
-    //const API_URL = "https://video-to-sheet-music.onrender.com";
-    // const API_URL = "http://localhost:5050";
-    // const API_URL = "https://extract-sheet-music-from-vid-git-72ea1a-yiminghuang47s-projects.vercel.app";
     const inputRef = useRef();
     const [urlInput, setUrlInput] = useState("");
     const [url, setUrl] = useState("");
     const [videoId, setVideoId] = useState("");
     const [status, setStatus] = useState("");
     const [regions, setRegions] = useState([]);
-
     const [uploadSource, setUploadSource] = useState();
     const [file, setFile] = useState();
+    const [conversionCompleted, setConversionCompleted] = useState(false);
 
     const handleUploadFileChange = (event) => {
         const file = event.target.files[0];
@@ -44,91 +40,49 @@ export default function BothUpload() {
     const handleUploadFile = async (event) => {
         event.preventDefault();
 
-        if (import.meta.env.DEV) {
-            let formData = new FormData();
-            formData.append("file", file);
-            formData.append("regions", JSON.stringify(regions));
-            setStatus(
-                'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
-            );
-            try {
-                const response = await axios.post(
-                    `${API_URL}/upload-local`,
-                    formData,
-                    {
-                        responseType: "arraybuffer",
-                    }
-                );
-                setStatus('<span style="color:green">Conversion completed!</span>');
-                const pdfBytes = new Uint8Array(response.data);
-                download(pdfBytes, "Sheet Music", "application/pdf");
-            } catch (error) {
-                console.error(error);
-                setStatus(
-                    '<span style="color:red">An error occured during conversion.</span>'
-                );
-            }
-        }
-        else{
-            
-    
-            setStatus(
-                'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
-            );
-    
-            
-    
-            try {
-                const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
-                    res.json()
-                );
-                console.log(url);
+        setStatus('Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>');
+
+        try {
+            let response;
+            if (import.meta.env.DEV) {
+                let formData = new FormData();
+                formData.append("file", file);
+                formData.append("regions", JSON.stringify(regions));
+                response = await axios.post(`${API_URL}/upload-local`, formData, {
+                    responseType: "arraybuffer",
+                });
+            } else {
+                const { url } = await fetch(`${API_URL}/s3Url`).then((res) => res.json());
                 await fetch(url, {
                     method: "PUT",
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
+                    headers: { "Content-Type": "multipart/form-data" },
                     body: file,
                 });
-        
                 const videoUrl = url.split("?")[0];
-                console.log(videoUrl);
-                const response = await axios.post(
-                    `${API_URL}/upload-s3`,
-                    {
-                        videoUrl: videoUrl,
-                        regions: JSON.stringify(regions),
-                    },
-                    {
-                        responseType: "arraybuffer",
-                    }
-                );
-                console.log(response.data);
-                setStatus('<span style="color:green">Conversion completed!</span>');
-                const pdfBytes = new Uint8Array(response.data);
-                download(pdfBytes, "Sheet Music", "application/pdf");
-            } catch (error) {
-                console.error(error);
-                setStatus(
-                    '<span style="color:red">An error occured during conversion.</span>'
-                );
+                response = await axios.post(`${API_URL}/upload-s3`, {
+                    videoUrl: videoUrl,
+                    regions: JSON.stringify(regions),
+                }, { responseType: "arraybuffer" });
             }
+            setStatus('<span style="color:green">Conversion completed!</span>');
+            const pdfBytes = new Uint8Array(response.data);
+            download(pdfBytes, "Sheet Music", "application/pdf");
+            setConversionCompleted(true);
+        } catch (error) {
+            console.error(error);
+            setStatus('<span style="color:red">An error occurred during conversion.</span>');
         }
-        
     };
 
     const handleUrlChange = (event) => {
         event.preventDefault();
         setUrl(urlInput);
-
         setUploadSource("");
         setRegions(null);
         setFile(null);
         setVideoId("");
         const id = getYouTubeID(urlInput);
-
         setVideoId(id);
-
         setRegions([{ x: 0, y: 0, width: 50, height: 50, data: { index: 0 } }]);
     };
 
@@ -143,39 +97,30 @@ export default function BothUpload() {
 
     const handleUploadUrl = async (event) => {
         event.preventDefault();
-        
-        setStatus(
-            'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
-        );
+        setStatus('Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>');
         try {
-            const response = await axios.post(
-                `${API_URL}/youtube-upload`,
-                {
-                    url: url,
-                    regions: JSON.stringify(regions),
-                },
-                {
-                    responseType: "arraybuffer",
-                }
-            );
-            console.log(response.data);
+            const response = await axios.post(`${API_URL}/youtube-upload`, {
+                url: url,
+                regions: JSON.stringify(regions),
+            }, { responseType: "arraybuffer" });
             setStatus('<span style="color:green">Conversion completed!</span>');
             const pdfBytes = new Uint8Array(response.data);
             download(pdfBytes, "Sheet Music", "application/pdf");
+            setConversionCompleted(true);
         } catch (error) {
-            setStatus(
-                '<span style="color:red">An error occured during conversion.</span>'
-            );
+            setStatus('<span style="color:red">An error occurred during conversion.</span>');
             console.error(error);
         }
+    };
+
+    const handleRefresh = () => {
+        window.location.reload();
     };
 
     return (
         <div className="container">
             <p className="title">Video to Sheet Music PDF</p>
-            <p className="description">
-                Extract sheet music pdf from video. <a>Example</a>
-            </p>
+            <p className="description">Extract sheet music pdf from video. <a>Example</a></p>
 
             {!status && (
                 <div className="upload-area">
@@ -284,6 +229,14 @@ export default function BothUpload() {
                     className="status"
                     dangerouslySetInnerHTML={{ __html: status }}
                 ></div>
+            )}
+            {conversionCompleted && (
+                <button
+                    className="button convert-another"
+                    onClick={handleRefresh}
+                >
+                    Convert Another One
+                </button>
             )}
         </div>
     );
