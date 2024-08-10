@@ -43,59 +43,76 @@ export default function BothUpload() {
 
     const handleUploadFile = async (event) => {
         event.preventDefault();
-        /*
-        let formData = new FormData();
-        formData.append("file", file);
-        formData.append("regions", JSON.stringify(regions));
-        */
-        const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
-            res.json()
-        );
-        console.log(url);
 
-        setStatus("Converting...<br><span style=\"font-size:18px\">it might take a few minutes depending on the length of the video</span>");
-
-        await fetch(url, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-            body: file,
-        });
-
-        const videoUrl = url.split("?")[0];
-        console.log(videoUrl);
-
-        try {
-            const response = await axios.post(
-                `${API_URL}/upload`,
-                {
-                    videoUrl: videoUrl,
-                    regions: JSON.stringify(regions),
-                },
-                {
-                    responseType: "arraybuffer",
-                }
+        if (import.meta.env.DEV) {
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("regions", JSON.stringify(regions));
+            setStatus(
+                'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
             );
-            console.log(response.data);
-            setStatus("<span style=\"color:green\">Conversion completed!</span>");
-            const pdfBytes = new Uint8Array(response.data);
-            download(pdfBytes, "Sheet Music", "application/pdf");
-        } catch (error) {
-            console.error(error);
-            setStatus("<span style=\"color:red\">An error occured during conversion.</span>");
+            try {
+                const response = await axios.post(
+                    `${API_URL}/upload-local`,
+                    formData,
+                    {
+                        responseType: "arraybuffer",
+                    }
+                );
+                setStatus('<span style="color:green">Conversion completed!</span>');
+                const pdfBytes = new Uint8Array(response.data);
+                download(pdfBytes, "Sheet Music", "application/pdf");
+            } catch (error) {
+                console.error(error);
+                setStatus(
+                    '<span style="color:red">An error occured during conversion.</span>'
+                );
+            }
         }
-
-        /*
-        try {
-            const response = await axios.post(`${API_URL}/upload`, formData, {
-                responseType: "blob",
+        else{
+            const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
+                res.json()
+            );
+            console.log(url);
+    
+            setStatus(
+                'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
+            );
+    
+            await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                body: file,
             });
-            download(response.data, "Sheet Music", "application/pdf");
-        } catch (error) {
-            console.error(error);
+    
+            const videoUrl = url.split("?")[0];
+            console.log(videoUrl);
+    
+            try {
+                const response = await axios.post(
+                    `${API_URL}/upload-s3`,
+                    {
+                        videoUrl: videoUrl,
+                        regions: JSON.stringify(regions),
+                    },
+                    {
+                        responseType: "arraybuffer",
+                    }
+                );
+                console.log(response.data);
+                setStatus('<span style="color:green">Conversion completed!</span>');
+                const pdfBytes = new Uint8Array(response.data);
+                download(pdfBytes, "Sheet Music", "application/pdf");
+            } catch (error) {
+                console.error(error);
+                setStatus(
+                    '<span style="color:red">An error occured during conversion.</span>'
+                );
+            }
         }
-            */
+        
     };
 
     const handleUrlChange = (event) => {
@@ -124,11 +141,10 @@ export default function BothUpload() {
 
     const handleUploadUrl = async (event) => {
         event.preventDefault();
-        const payload = {
-            url: url,
-            regions: regions,
-        };
-        setStatus("Converting...<br><span style=\"font-size:18px\">it might take a few minutes depending on the length of the video</span>");
+        
+        setStatus(
+            'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
+        );
         try {
             const response = await axios.post(
                 `${API_URL}/youtube-upload`,
@@ -141,11 +157,13 @@ export default function BothUpload() {
                 }
             );
             console.log(response.data);
-            setStatus("<span style=\"color:green\">Conversion completed!</span>");
+            setStatus('<span style="color:green">Conversion completed!</span>');
             const pdfBytes = new Uint8Array(response.data);
             download(pdfBytes, "Sheet Music", "application/pdf");
         } catch (error) {
-            setStatus("<span style=\"color:red\">An error occured during conversion.</span>");
+            setStatus(
+                '<span style="color:red">An error occured during conversion.</span>'
+            );
             console.error(error);
         }
     };
@@ -157,106 +175,112 @@ export default function BothUpload() {
                 Extract sheet music pdf from video. <a>Example</a>
             </p>
 
-            {(!status) && (<div className="upload-area">
-                <form className="form" onSubmit={handleUrlChange}>
-                    <p>Enter YouTube link: </p>
-                    <div className="input-container">
-                        <input
-                            className="input-text"
-                            type="text"
-                            name="url"
-                            value={urlInput}
-                            onChange={handleUrlInputChange}
-                        />
-                        <button className="button button-enter" type="submit">
-                            Enter
-                        </button>
-                    </div>
-                </form>
-
-                <p>or</p>
-                <input
-                    ref={inputRef}
-                    type="file"
-                    onChange={handleUploadFileChange}
-                    accept=".mov,.mp4"
-                    hidden
-                />
-
-                <button className="button" onClick={handleChoose}>
-                    Upload from computer
-                </button>
-                {(videoId || file) && (
-                    <p>
-                        Drag the green box to cover the region of the sheet
-                        music.
-                    </p>
-                )}
-                {videoId && (
-                    <div className="video-container">
-                        <RegionSelect
-                            regions={regions}
-                            onChange={regionsOnChange}
-                            maxRegions={1}
-                            regionStyle={{
-                                background: "rgba(0, 255, 0, 0.5)",
-                                zIndex: 2,
-                            }}
-                            constraint
-                        >
-                            <YouTube
-                                className="youtube-video-container"
-                                videoId={videoId}
-                                id="youtube-video"
+            {!status && (
+                <div className="upload-area">
+                    <form className="form" onSubmit={handleUrlChange}>
+                        <p>Enter YouTube link: </p>
+                        <div className="input-container">
+                            <input
+                                className="input-text"
+                                type="text"
+                                name="url"
+                                value={urlInput}
+                                onChange={handleUrlInputChange}
                             />
-                        </RegionSelect>
-                    </div>
-                )}
+                            <button
+                                className="button button-enter"
+                                type="submit"
+                            >
+                                Enter
+                            </button>
+                        </div>
+                    </form>
 
-                
-                {file && (
-                    <div className="video-container">
-                        <RegionSelect
-                            regions={regions}
-                            onChange={regionsOnChange}
-                            maxRegions={1}
-                            regionStyle={{
-                                background: "rgba(0, 255, 0, 0.5)",
-                                zIndex: 2,
-                            }}
-                            constraint
-                        >
-                            <video
-                                className="video"
-                                controls
-                                src={uploadSource}
-                            />
-                        </RegionSelect>
-                    </div>
-                )}
-                
-                
-            </div>)}
-            
-            {videoId && !status && (
-                    <button
-                        className="button convert-button"
-                        onClick={handleUploadUrl}
-                    >
-                        Convert to Sheet Music
+                    <p>or</p>
+                    <input
+                        ref={inputRef}
+                        type="file"
+                        onChange={handleUploadFileChange}
+                        accept=".mov,.mp4"
+                        hidden
+                    />
+
+                    <button className="button" onClick={handleChoose}>
+                        Upload from computer
                     </button>
-                )}
+                    {(videoId || file) && (
+                        <p>
+                            Drag the green box to cover the region of the sheet
+                            music.
+                        </p>
+                    )}
+                    {videoId && (
+                        <div className="video-container">
+                            <RegionSelect
+                                regions={regions}
+                                onChange={regionsOnChange}
+                                maxRegions={1}
+                                regionStyle={{
+                                    background: "rgba(0, 255, 0, 0.5)",
+                                    zIndex: 2,
+                                }}
+                                constraint
+                            >
+                                <YouTube
+                                    className="youtube-video-container"
+                                    videoId={videoId}
+                                    id="youtube-video"
+                                />
+                            </RegionSelect>
+                        </div>
+                    )}
+
+                    {file && (
+                        <div className="video-container">
+                            <RegionSelect
+                                regions={regions}
+                                onChange={regionsOnChange}
+                                maxRegions={1}
+                                regionStyle={{
+                                    background: "rgba(0, 255, 0, 0.5)",
+                                    zIndex: 2,
+                                }}
+                                constraint
+                            >
+                                <video
+                                    className="video"
+                                    controls
+                                    src={uploadSource}
+                                />
+                            </RegionSelect>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {videoId && !status && (
+                <button
+                    className="button convert-button"
+                    onClick={handleUploadUrl}
+                >
+                    Convert to Sheet Music
+                </button>
+            )}
 
             {file && !status && (
-                    <button
-                        className="button convert-button"
-                        onClick={handleUploadFile}
-                    >
-                        Convert to Sheet Music
-                    </button>
-                )}
-            {status && <div className="status" dangerouslySetInnerHTML={{__html: status}}></div>}
-            
+                <button
+                    className="button convert-button"
+                    onClick={handleUploadFile}
+                >
+                    Convert to Sheet Music
+                </button>
+            )}
+            {status && (
+                <div
+                    className="status"
+                    dangerouslySetInnerHTML={{ __html: status }}
+                ></div>
+            )}
         </div>
     );
 }

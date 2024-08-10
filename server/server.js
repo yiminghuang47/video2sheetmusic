@@ -10,6 +10,18 @@ import { generateUploadURL } from "./s3.js";
 const PORT = process.env.PORT || 5050;
 const app = express();
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "videos/");
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.originalname);
+    },
+});
+
+
+const upload = multer({ storage });
+
 
 
 app.options('*', cors())
@@ -36,46 +48,62 @@ app.get("/s3Url", async (req, res) => {
     res.send({ url });
 });
 
-/*
-app.post("/upload", upload.single("file"), (req, res) => {
-    const regions = JSON.parse(req.body.regions);
-    const { x, y, width, height } = regions[0];
-    const Y0 = y;
-    const Y1 = y + height;
-    const X0 = x;
-    const X1 = x + width;
-    console.log(X0 + " " + Y0 + " " + X1 + " " + Y1);
-    if (!req.file) {
-        return res.status(400).send({ error: "No file uploaded" });
+
+
+app.post("/upload-local", upload.single("file"), async (req, res) => {
+    try {
+        const regions = JSON.parse(req.body.regions);
+        const { x, y, width, height } = regions[0];
+        const Y0 = y;
+        const Y1 = y + height;
+        const X0 = x;
+        const X1 = x + width;
+
+        if (!req.file) {
+            return res.status(400).send({ error: "No file uploaded" });
+        }
+
+        const pythonProcess = spawn("python", [
+            "script.py",
+            req.file.path,
+            X0,
+            Y0,
+            X1,
+            Y1,
+        ]);
+
+        let stdoutData = [];
+        let stderrData = [];
+
+        pythonProcess.stdout.on("data", (data) => {
+            stdoutData.push(data);
+        });
+
+        pythonProcess.stderr.on("data", (data) => {
+            stderrData.push(data);
+        });
+
+        pythonProcess.on("close", async (code) => {
+            if (code !== 0) {
+                const stderrOutput = Buffer.concat(stderrData).toString();
+                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
+            }
+
+            const output = Buffer.concat(stdoutData);
+            if (output.length === 0) {
+                return res.status(500).send({ error: "No PDF generated" });
+            }
+
+            res.setHeader("Content-Type", "application/pdf");
+            res.send(output);
+        });
+    } catch (error) {
+        res.status(500).send({ error: "Internal Server Error", details: error.message });
     }
-
-    console.log(req.file.path);
-    const pythonProcess = spawnSync("python", [
-        "script.py",
-        req.file.path,
-        X0,
-        Y0,
-        X1,
-        Y1,
-    ]);
-
-    if (pythonProcess.error) {
-        console.error(
-            `Error executing python script: ${pythonProcess.error.message}`
-        );
-        return res.status(500).send({ error: "Error executing python script" });
-    }
-
-    const output = pythonProcess.stdout.toString().trim().split(/\r?\n/);
-    console.log(output);
-    const path = output[output.length - 1];
-    console.log(path);
-    //res.json({ output: output });
-    res.sendFile(path, { root: "." });
 });
-*/
 
-app.post("/upload", async (req, res) => {
+
+app.post("/upload-s3", async (req, res) => {
     try {
         const regions = JSON.parse(req.body.regions);
         const { x, y, width, height } = regions[0];
