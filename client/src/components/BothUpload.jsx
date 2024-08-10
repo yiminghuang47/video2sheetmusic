@@ -70,27 +70,29 @@ export default function BothUpload() {
             }
         }
         else{
-            const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
-                res.json()
-            );
-            console.log(url);
+            
     
             setStatus(
                 'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
             );
     
-            await fetch(url, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-                body: file,
-            });
-    
-            const videoUrl = url.split("?")[0];
-            console.log(videoUrl);
+            
     
             try {
+                const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
+                    res.json()
+                );
+                console.log(url);
+                await fetch(url, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                    body: file,
+                });
+        
+                const videoUrl = url.split("?")[0];
+                console.log(videoUrl);
                 const response = await axios.post(
                     `${API_URL}/upload-s3`,
                     {
