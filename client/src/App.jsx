@@ -11,6 +11,20 @@ function App() {
          <Navbar />
         
         <Outlet />
+        <footer className="footer">
+            
+                <a
+                    href="https://github.com/yiminghuang47/extract-sheet-music-from-video/tree/main"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Source Code
+                </a>
+                <a href="mailto:yiminghuang47@gmail.com">
+                    Contact
+                </a>
+            
+        </footer>
       </div>
     </>
   )

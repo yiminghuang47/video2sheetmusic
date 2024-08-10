@@ -3,7 +3,7 @@ import './Navbar.css'
 
 export default function Navbar() {
     return (
-        <div class="nav-container">
+        <div className="nav-container">
             <nav>
                 <NavLink to="/"><span style={{textDecoration: "underline"}}>Video2SheetMusic</span></NavLink>
 
