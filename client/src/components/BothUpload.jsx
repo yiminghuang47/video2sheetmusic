@@ -155,7 +155,7 @@ export default function BothUpload() {
                     />
 
                     <button className="button" onClick={handleChoose}>
-                        Upload from computer
+                        Upload local video
                     </button>
                     {(videoId || file) && (
                         <p>
