@@ -70,6 +70,7 @@ export default function BothUpload() {
             setConversionCompleted(true);
         } catch (error) {
             console.error(error);
+            setConversionCompleted(true);
             setStatus('<span style="color:red">An error occurred during conversion.</span>');
         }
     };
@@ -109,6 +110,7 @@ export default function BothUpload() {
             setConversionCompleted(true);
         } catch (error) {
             setStatus('<span style="color:red">An error occurred during conversion.</span>');
+            setConversionCompleted(true);
             console.error(error);
         }
     };
