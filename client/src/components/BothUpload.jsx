@@ -255,6 +255,8 @@ export default function BothUpload() {
                             </RegionSelect>
                         </div>
                     )}
+
+                    {import.meta.env.PROD && (<p>Note: YouTube upload only works locally. See <a href="https://github.com/yiminghuang47/extract-sheet-music-from-video/tree/main" target="_blank" rel="noopener noreferrer">this page</a> for more information.</p>)}
                 </div>
             )}
 
