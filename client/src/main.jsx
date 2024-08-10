@@ -10,7 +10,6 @@ import Upload from "./components/Upload";
 import About from "./components/About";
 import Navbar from "./components/Navbar";
 import App from "./App";
-import YoutubeUpload from "./components/YoutubeUpload";
 import Home from "./components/Home";
 
 
