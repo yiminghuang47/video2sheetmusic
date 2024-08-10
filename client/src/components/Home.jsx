@@ -1,10 +1,11 @@
-import BothUpload from "./BothUpload";
+import Upload from "./Upload";
+import Navbar from "./Navbar";
 
 
 export default function Home() {
     return (
       <div>
-        <BothUpload/>
+        <Upload/>
         
       </div>
     );
