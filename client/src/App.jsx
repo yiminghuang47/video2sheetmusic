@@ -14,7 +14,7 @@ function App() {
         <footer className="footer">
             
                 <a
-                    href="https://github.com/yiminghuang47/extract-sheet-music-from-video/tree/main"
+                    href="https://github.com/yiminghuang47/video2sheetmusic"
                     target="_blank"
                     rel="noopener noreferrer"
                 >

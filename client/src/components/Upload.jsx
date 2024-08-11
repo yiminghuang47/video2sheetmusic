@@ -40,7 +40,9 @@ export default function Upload() {
     const handleUploadFile = async (event) => {
         event.preventDefault();
 
-        setStatus('Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>');
+        setStatus(
+            'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
+        );
 
         try {
             let response;
@@ -48,21 +50,31 @@ export default function Upload() {
                 let formData = new FormData();
                 formData.append("file", file);
                 formData.append("regions", JSON.stringify(regions));
-                response = await axios.post(`${API_URL}/upload-local`, formData, {
-                    responseType: "arraybuffer",
-                });
+                response = await axios.post(
+                    `${API_URL}/upload-local`,
+                    formData,
+                    {
+                        responseType: "arraybuffer",
+                    }
+                );
             } else {
-                const { url } = await fetch(`${API_URL}/s3Url`).then((res) => res.json());
+                const { url } = await fetch(`${API_URL}/s3Url`).then((res) =>
+                    res.json()
+                );
                 await fetch(url, {
                     method: "PUT",
                     headers: { "Content-Type": "multipart/form-data" },
                     body: file,
                 });
                 const videoUrl = url.split("?")[0];
-                response = await axios.post(`${API_URL}/upload-s3`, {
-                    videoUrl: videoUrl,
-                    regions: JSON.stringify(regions),
-                }, { responseType: "arraybuffer" });
+                response = await axios.post(
+                    `${API_URL}/upload-s3`,
+                    {
+                        videoUrl: videoUrl,
+                        regions: JSON.stringify(regions),
+                    },
+                    { responseType: "arraybuffer" }
+                );
             }
             setStatus('<span style="color:green">Conversion completed!</span>');
             const pdfBytes = new Uint8Array(response.data);
@@ -71,7 +83,9 @@ export default function Upload() {
         } catch (error) {
             console.error(error);
             setConversionCompleted(true);
-            setStatus('<span style="color:red">An error occurred during conversion.</span>');
+            setStatus(
+                '<span style="color:red">An error occurred during conversion.</span>'
+            );
         }
     };
 
@@ -98,18 +112,26 @@ export default function Upload() {
 
     const handleUploadUrl = async (event) => {
         event.preventDefault();
-        setStatus('Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>');
+        setStatus(
+            'Converting...<br><span style="font-size:18px">it might take a few minutes depending on the length of the video</span>'
+        );
         try {
-            const response = await axios.post(`${API_URL}/youtube-upload`, {
-                url: url,
-                regions: JSON.stringify(regions),
-            }, { responseType: "arraybuffer" });
+            const response = await axios.post(
+                `${API_URL}/youtube-upload`,
+                {
+                    url: url,
+                    regions: JSON.stringify(regions),
+                },
+                { responseType: "arraybuffer" }
+            );
             setStatus('<span style="color:green">Conversion completed!</span>');
             const pdfBytes = new Uint8Array(response.data);
             download(pdfBytes, "Sheet Music", "application/pdf");
             setConversionCompleted(true);
         } catch (error) {
-            setStatus('<span style="color:red">An error occurred during conversion.</span>');
+            setStatus(
+                '<span style="color:red">An error occurred during conversion.</span>'
+            );
             setConversionCompleted(true);
             console.error(error);
         }
@@ -121,8 +143,10 @@ export default function Upload() {
 
     return (
         <div className="container">
-            <p className="title">Video to Sheet Music PDF</p>
-            <p className="description">Extract sheet music pdf from video. <a>Example</a></p>
+            <h2 className="title">Video to Sheet Music PDF</h2>
+            <p className="description">
+                Extract sheet music pdf from video. <a>Example</a>
+            </p>
 
             {!status && (
                 <div className="upload-area">
@@ -204,11 +228,36 @@ export default function Upload() {
                             </RegionSelect>
                         </div>
                     )}
-
-                    {import.meta.env.PROD && (<p>Note: YouTube upload only works locally. See <a href="https://github.com/yiminghuang47/extract-sheet-music-from-video/tree/main" target="_blank" rel="noopener noreferrer">this page</a> for more information.</p>)}
                 </div>
             )}
 
+            {status && (
+                <div
+                    className="status"
+                    dangerouslySetInnerHTML={{ __html: status }}
+                ></div>
+            )}
+            {conversionCompleted && (
+                <button
+                    className="button convert-another"
+                    onClick={handleRefresh}
+                >
+                    Convert Another One
+                </button>
+            )}
+            {import.meta.env.PROD && (
+                <p>
+                    Note: YouTube upload only works locally. See{" "}
+                    <a
+                        href="/about#youtube-upload-note"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        this page
+                    </a>{" "}
+                    for more information.
+                </p>
+            )}
             {videoId && !status && (
                 <button
                     className="button convert-button"
@@ -224,20 +273,6 @@ export default function Upload() {
                     onClick={handleUploadFile}
                 >
                     Convert to Sheet Music
-                </button>
-            )}
-            {status && (
-                <div
-                    className="status"
-                    dangerouslySetInnerHTML={{ __html: status }}
-                ></div>
-            )}
-            {conversionCompleted && (
-                <button
-                    className="button convert-another"
-                    onClick={handleRefresh}
-                >
-                    Convert Another One
                 </button>
             )}
         </div>
