@@ -251,7 +251,7 @@ export default function Upload() {
             )}
             {import.meta.env.PROD && (
                 <p>
-                    Note: YouTube upload only works locally. See{" "}
+                    Note: YouTube upload only works on local machine. See{" "}
                     <a
                         href="/about#youtube-upload-note"
                         target="_blank"

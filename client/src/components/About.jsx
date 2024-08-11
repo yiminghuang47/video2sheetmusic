@@ -53,7 +53,7 @@ export default function About() {
                     https://video2sheetmusic.vercel.app/
                 </a>
                 , then the YouTube link upload won't work due to YouTube's
-                policies
+                policies. 
             </p>
             <p>There are two alternatives.</p>
             <ol>
@@ -71,7 +71,7 @@ export default function About() {
                         GitHub page
                     </a>{" "}
                     and follow the instructions in README.md. You need to clone
-                    the repository and run the website locally.
+                    the repository and run the website on your local machine.
                 </li>
             </ol>
         </div>
