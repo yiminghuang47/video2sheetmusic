@@ -1,16 +1,21 @@
 import { NavLink } from "react-router-dom";
-import './Navbar.css'
+import "./Navbar.css";
 
 export default function Navbar() {
     return (
         <div className="nav-container">
             <nav>
-                <NavLink to="/"><span style={{textDecoration: "underline"}}>Video2SheetMusic</span></NavLink>
+                <NavLink to="/">
+                    <span style={{ textDecoration: "underline" }}>
+                        Video2SheetMusic
+                    </span>
+                </NavLink>
 
-                <div><NavLink to="/">Home</NavLink>
+                <div>
+                    <NavLink to="/">Home</NavLink>
 
-<NavLink to="/about">About</NavLink></div>
-                
+                    <NavLink to="/about">About</NavLink>
+                </div>
             </nav>
         </div>
     );

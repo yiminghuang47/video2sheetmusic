@@ -19,12 +19,9 @@ const storage = multer.diskStorage({
     },
 });
 
-
 const upload = multer({ storage });
 
-
-
-app.options('*', cors())
+app.options("*", cors());
 var corsOptions = {
     origin: "*",
 };
@@ -47,8 +44,6 @@ app.get("/s3Url", async (req, res) => {
 
     res.send({ url });
 });
-
-
 
 app.post("/upload-local", upload.single("file"), async (req, res) => {
     try {
@@ -86,7 +81,12 @@ app.post("/upload-local", upload.single("file"), async (req, res) => {
         pythonProcess.on("close", async (code) => {
             if (code !== 0) {
                 const stderrOutput = Buffer.concat(stderrData).toString();
-                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
+                return res
+                    .status(500)
+                    .send({
+                        error: "Error executing python script",
+                        details: stderrOutput,
+                    });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -98,10 +98,12 @@ app.post("/upload-local", upload.single("file"), async (req, res) => {
             res.send(output);
         });
     } catch (error) {
-        res.status(500).send({ error: "Internal Server Error", details: error.message });
+        res.status(500).send({
+            error: "Internal Server Error",
+            details: error.message,
+        });
     }
 });
-
 
 app.post("/upload-s3", async (req, res) => {
     try {
@@ -137,7 +139,12 @@ app.post("/upload-s3", async (req, res) => {
         pythonProcess.on("close", async (code) => {
             if (code !== 0) {
                 const stderrOutput = Buffer.concat(stderrData).toString();
-                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
+                return res
+                    .status(500)
+                    .send({
+                        error: "Error executing python script",
+                        details: stderrOutput,
+                    });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -149,7 +156,10 @@ app.post("/upload-s3", async (req, res) => {
             res.send(output);
         });
     } catch (error) {
-        res.status(500).send({ error: "Internal Server Error", details: error.message });
+        res.status(500).send({
+            error: "Internal Server Error",
+            details: error.message,
+        });
     }
 });
 
@@ -186,7 +196,12 @@ app.post("/youtube-upload", async (req, res) => {
         pythonProcess.on("close", async (code) => {
             if (code !== 0) {
                 const stderrOutput = Buffer.concat(stderrData).toString();
-                return res.status(500).send({ error: "Error executing python script", details: stderrOutput });
+                return res
+                    .status(500)
+                    .send({
+                        error: "Error executing python script",
+                        details: stderrOutput,
+                    });
             }
 
             const output = Buffer.concat(stdoutData);
@@ -198,7 +213,10 @@ app.post("/youtube-upload", async (req, res) => {
             res.send(output);
         });
     } catch (error) {
-        res.status(500).send({ error: "Internal Server Error", details: error.message });
+        res.status(500).send({
+            error: "Internal Server Error",
+            details: error.message,
+        });
     }
 });
 // start the Express server
